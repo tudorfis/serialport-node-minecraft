@@ -4,7 +4,7 @@ const robot = require( 'robotjs' )
 const SerialPort = require( 'serialport' )
 const Readline = require( '@serialport/parser-readline' )
 
-const port = new SerialPort( 'COM8', { baudRate: 9600 } )
+const port = new SerialPort( 'COM9', { baudRate: 9600 } )
 const parser = port.pipe( new Readline({ delimiter: '\n' }))
 
 const mouseSensitivityX = 5
