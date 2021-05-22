@@ -5,30 +5,112 @@
 
 import pyautogui
 import serial
+import time
 
 ser = serial.Serial(
-    port='COM9',\
+    port='COM10',\
     baudrate=9600)
 
 ser.flushInput()
 print("connected to: " + ser.portstr)
 
-axX = 0
-axY = 300
+centerX = 960
+centerY = 540
+
+pyautogui.moveTo( centerX, centerY )
+
+# axX = 960
+# axY = 540
+
+# axDiff = 1
+# axSignal = 1
+
+previousMpuX = 0
+previousMpuY = 0
+
+mouseSensitivityX = 30
+mouseSensitivityY = 30
 
 while True:
-    ser_bytes = ser.readline()
-    coordinates = str(ser_bytes).split(" ")
-    mpuX = coordinates[0].replace("b'x=", "")
-    mpuY = coordinates[1].replace("y=", "")
-    mpuZ = coordinates[2].replace("z=", "").replace("\\r\\n'", "")
+    # time.sleep( 0.5 )
+    ser_bytes = str(ser.readline())
+    ser_bytes = ser_bytes.replace("b'", "").replace(r"\r\n'", "")
+    coordinates = ser_bytes.split(",")
     
-    axX += 5
-    if axX > 1400 : 
-        axX = 1400
-    
+    try:
+        mpuX = int( coordinates[0] )
+        mpuY = int( float( coordinates[1] ) )
+        mpuZ = int( float( coordinates[2] ) )
+        
+        mouseX, mouseY = pyautogui.position()
 
-    pyautogui.moveTo( axX, axY )
+   
+        print(  mpuY )
+
+
+        if ( mpuX > 5 ) :
+            if mouseX != ( centerX + 30 ) :
+                pyautogui.moveTo( centerX + 30, centerY )
+                
+        elif ( mpuX < 5 ) :
+            if mouseX != ( centerX - 30 ) :
+                pyautogui.moveTo( centerX - 30, centerY)
+        
+        # elif ( mpuX < 5 and mpuX > -5 ) :
+        #     if ( mouseX != centerX ) :
+        #         pyautogui.moveTo( centerX, centerY )
+
+
+            
+        # if ( mpuX > 10 or mpuX < -10 ) :
+        #     if mouseX != ( centerX + mpuX ) :
+        #         pyautogui.moveTo( centerX + mpuX, centerY )
+        #         time.sleep( 0.1 )
+            
+        # elif ( mpuX < 10 and mpuX > -10 ) :
+        #     if ( mouseX != centerX ) :
+        #         pyautogui.moveTo( centerX, centerY )
+        #         time.sleep( 0.1 )
+
+            
+        # print( mpuX )
+
+        # time.sleep( 0.1 )
+
+    except ValueError:
+        pass 
+    
+    
+    # mouseX, mouseY = pyautogui.position()
+          
+    # if mpuX > previousMpuX :
+    #     mouseX -= mouseSensitivityX
+  
+    # if mpuX < previousMpuX :
+    #     mouseX += mouseSensitivityX
+  
+    # if mpuY > previousMpuY :
+    #     mouseY -= mouseSensitivityY
+  
+    # if mpuY < previousMpuY :
+    #     mouseY += mouseSensitivityY
+
+    # previousMpuX = mpuX
+    # previousMpuY = mpuY
+
+    # pyautogui.moveTo( mouseX, mouseY )
+
+########################
 
     # print( mpuX + " " + mpuY + " " + mpuZ)
+    # print( "x= " + str(x) + " y=" + str(y) )
+
+    # pyautogui.moveTo( axX + axDiff, axY )
+
+    # if axDiff > 5 or axDiff < 0 :
+        # axSignal = -axSignal
+
+    # axDiff += axSignal
+  
+
     
